@@ -11,7 +11,6 @@ import {ActivatedRoute} from "@angular/router";
   styleUrl: './course.component.scss'
 })
 export class CourseComponent implements OnInit {
-
   course = signal<Course | null>(null);
 
   lessons = signal<Lesson[]>([]);

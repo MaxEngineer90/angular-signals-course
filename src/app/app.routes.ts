@@ -11,12 +11,12 @@ export const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    canActivate: [isUserAuthenticated]
+
   },
   {
     'path': 'courses/:courseId',
     component: CourseComponent,
-    canActivate: [isUserAuthenticated],
+  
     resolve: {
       course: courseResolver,
       lessons: courseLessonsResolver
