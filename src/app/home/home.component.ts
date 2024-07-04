@@ -1,4 +1,4 @@
-import {Component, computed, signal} from '@angular/core';
+import {Component, effect, EffectRef, inject, Injector, signal} from '@angular/core';
 import {MatTab, MatTabGroup} from '@angular/material/tabs';
 import {CoursesCardListComponent} from '../courses-card-list/courses-card-list.component';
 
@@ -15,24 +15,51 @@ import {CoursesCardListComponent} from '../courses-card-list/courses-card-list.c
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  counter = signal<number>(0);
 
-  tenXCounter = computed(() => {
-    const val = this.counter();
+  counter = signal(0);
 
-    return val * 10;
-  });
+  injector = inject(Injector);
+  effectRef: EffectRef | null = null;
 
-  hundredXCounter = computed(() => {
-    const val = this.tenXCounter();
+  constructor() {
 
-    return val * 10;
-  });
+    this.effectRef = effect((onCleanup) => {
 
-  increment() {
-    this.counter.update(counter => counter + 1);
+      const counter = this.counter();
+
+      const timeout = setTimeout(() => {
+        console.log(`counter value: ${counter}`);
+      }, 1000);
+
+
+      onCleanup(() => {
+        console.log('Calling clean up');
+        clearTimeout(timeout);
+      });
+
+    });
+    /* effect(() => {
+         console.log(`counter value: ${this.counter()}`);
+
+         this.increment();
+       },
+       {
+         injector: this.injector,
+         //Be careful with this configuration permanent loop
+         allowSignalWrites: false
+       });*/
+
   }
 
+  increment() {
+    this.counter.update(val => val + 1);
+  }
+
+  cleanup() {
+
+
+    this.effectRef?.destroy();
+  }
 }
 
 
